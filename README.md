@@ -45,21 +45,12 @@ cd Ratatoskr-mcp
 
 Download the latest English Wikipedia multistream dump into the `dumps/` directory:
 
-```bash
-mkdir -p dumps
-cd dumps
-
-# Get the two files from the latest dump date (e.g., 20260601)
-# Source: https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/
-wget https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/enwiki-<DATE>-pages-articles-multistream-index.txt
-wget https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/enwiki-<DATE>-pages-articles-multistream.xml.bz2
-```
-
-Replace `<DATE>` with the latest dump date available on the [dump index page](https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/).
+https://meta.wikimedia.org/wiki/Data_dump_torrents#English_Wikipedia
 
 Then rename (or symlink) the files to the names the compose file expects:
 
 ```bash
+bunzip enwiki-<DATE>-pages-articles-multistream-index.txt.bz2
 ln -s enwiki-<DATE>-pages-articles-multistream-index.txt multistream-index.txt
 ln -s enwiki-<DATE>-pages-articles-multistream.xml.bz2 multistream.xml.bz2
 ```
@@ -138,4 +129,4 @@ python server.py
 
 ## License
 
-MIT
+UNLICENSE
