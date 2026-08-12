@@ -1,0 +1,7 @@
+fastmcp>=3.4.7
+lxml>=6.1.1
+mwparserfromhell>=0.7.2
+markdown>=3.10.3
+httpx>=0.28.1
+ripgrepy>=2.2.0
+rapidfuzz>=3.14.5

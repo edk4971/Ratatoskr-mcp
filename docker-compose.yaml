@@ -1,0 +1,14 @@
+services:
+  ratatoskr:
+    build: .
+    container_name: ratatoskr-mcp
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dumps:/data:ro
+    environment:
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8000
+      - INDEX_PATH=/data/multistream-index.txt
+      - DUMP_PATH=/data/multistream.xml.bz2
+    restart: unless-stopped
