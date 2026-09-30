@@ -71,6 +71,7 @@ All settings are controlled via environment variables (set in `docker-compose.ya
 |---|---|---|
 | `MCP_HOST` | `0.0.0.0` | Host address to bind |
 | `MCP_PORT` | `8000` | Port to listen on |
+| `MCP_TRANSPORT` | `sse` | Transport: `sse`, `streamable-http`, or `stdio`. `http` is normalised to `streamable-http` |
 | `INDEX_PATH` | `/data/multistream-index.txt` | Path to the multistream index text file |
 | `DUMP_PATH` | `/data/multistream.xml.bz2` | Path to the multistream bz2 dump file |
 
@@ -91,11 +92,12 @@ All requests completed in **under 1 second**, well within the sub-3-second targe
 
 ## Using with an MCP client
 
-The server speaks the MCP protocol over SSE. Point any MCP-compatible client at:
+The server speaks the MCP protocol. Point any MCP-compatible client at:
 
-```
-http://localhost:8000/sse
-```
+* SSE: `http://localhost:8000/sse`
+* Streamable HTTP: `http://localhost:8000/mcp`
+
+Transport is controlled by `MCP_TRANSPORT`.
 
 The single exposed tool is:
 
@@ -104,7 +106,7 @@ The single exposed tool is:
 ## Project structure
 
 ```
-├── server.py          — MCP server entry point (fastmcp, SSE transport)
+├── server.py          — MCP server entry point (mcp.server.mcpserver MCPServer)
 ├── index.py           — Flat-file index search (ripgrepy + rapidfuzz)
 ├── retrieval.py       — bz2 block fetching + output assembly + redirect following
 ├── parser.py          — Wikipedia XML/wikitext parsing (lxml + mwparserfromhell)

@@ -7,7 +7,7 @@ An MCP (Model Context Protocol) server that retrieves Wikipedia articles from lo
 Sub-3-second response time for article retrieval. Currently hitting 0.3–0.6s.
 
 ## Architecture (4 files, flat — no subpackages)
-- `server.py` — MCP server entry point using `fastmcp` with SSE transport. Exposes one tool: `get_wikipedia_article(topic)`.
+- `server.py` — MCP server entry point using `mcp.server.mcpserver.MCPServer` with configurable transport. Exposes one tool: `get_wikipedia_article(topic)`.
 - `index.py` — Flat-file index lookup. `find_page(title) -> (byte_offset, stream_id, title)`. Uses ripgrepy for 0.2s case-insensitive search of the 1.2GB multistream index, rapidfuzz for fuzzy fallback.
 - `retrieval.py` — Orchestrates: find_page → seek bz2 block → decompress → parse → follow redirects → assemble Markdown output.
 - `parser.py` — XML parsing (lxml) + wikitext parsing (mwparserfromhell). Extracts title, lead section, infobox. Detects `<redirect>` elements.
@@ -26,10 +26,11 @@ All paths and settings via environment variables:
 - `DUMP_PATH` — multistream bz2 dump file (default: `dumps/enwiki-*-multistream.xml.bz2`)
 - `MCP_HOST` — bind address (default: `0.0.0.0`)
 - `MCP_PORT` — port (default: `8000`)
+- `MCP_TRANSPORT` — transport: `sse`, `streamable-http`, or `stdio` (default: `sse`). `http` is normalised to `streamable-http`.
 
 ## Dependencies
 - Python 3.12+, `ripgrep` system binary (used by ripgrepy)
-- See `requirements.txt`: fastmcp, lxml, mwparserfromhell, markdown, httpx, ripgrepy, rapidfuzz
+- See `requirements.txt`: mcp, lxml, mwparserfromhell, ripgrepy, rapidfuzz
 - Alpine: `pip install --break-system-packages -r requirements.txt`
 
 ## Key design decisions
@@ -47,6 +48,5 @@ No test suite. Manual benchmark: `python /tmp/opencode/bench.py` runs 15 topics 
 
 ## Environment context
 - `/workspace/dumps/`: 1.2GB index text file + 24.6GB bz2 dump (bind-mounted into Docker as `/data/`)
-- `/workspace/fastmcp-src/`: framework source (not vendored into the app)
 - `/workspace/mwparserfromhell/`: wikitext parser library source
 - `/workspace/Dockerfile` + `docker-compose.yaml`: containerized deployment with bind mount for dumps

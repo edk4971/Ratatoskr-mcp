@@ -1,9 +1,9 @@
 import os
 
-from fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from retrieval import fetch_page_content
 
-mcp = FastMCP("Wikipedia")
+mcp = MCPServer("Wikipedia")
 
 @mcp.tool()
 def get_wikipedia_article(topic: str) -> str:
@@ -25,4 +25,11 @@ def get_wikipedia_article(topic: str) -> str:
 if __name__ == "__main__":
     host = os.environ.get("MCP_HOST", "0.0.0.0")
     port = int(os.environ.get("MCP_PORT", "8000"))
-    mcp.run(transport="sse", host=host, port=port)
+    transport = os.environ.get("MCP_TRANSPORT", "sse").lower()
+    # Normalise legacy names
+    if transport == "http":
+        transport = "streamable-http"
+    # Validate
+    if transport not in ("stdio", "sse", "streamable-http"):
+        transport = "sse"
+    mcp.run(transport=transport, host=host, port=port)
